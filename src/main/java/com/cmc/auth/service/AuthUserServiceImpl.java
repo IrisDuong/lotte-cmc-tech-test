@@ -29,6 +29,9 @@ public class AuthUserServiceImpl implements AuthUserService{
 	public UserDTO createUser(UserDTO dto) {
 		UserRole userRole = userRoleRepository.findByName(EUserRole.valueOf(dto.getRoleName()))
 				.orElseThrow(()-> new BaseException(HttpErrorCode.NOT_FOUND, "User Role not found"));
+		
+		if(userRole.getName().equals(EUserRole.ADMIN))
+			throw new BaseException(HttpErrorCode.UNAUTHORIZED, "Admin user can be only one");
 		try {
 			User user = User.builder()
 					.userName(dto.getUserName())

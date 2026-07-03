@@ -4,6 +4,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cmc.auth.config.UserDetailsCoreImpl;
 import com.cmc.auth.entity.User;
@@ -20,6 +21,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService{
 	private final UserRepository userRepository;
 
 	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User existedUser = userRepository.findByUserName(username)
 				.orElseThrow(()-> new BaseException(HttpErrorCode.NOT_FOUND, "User not found"));

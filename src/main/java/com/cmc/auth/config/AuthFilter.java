@@ -54,6 +54,7 @@ public class AuthFilter extends OncePerRequestFilter{
 					log.info("[AUTH] - Filter :: User is authorized");
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 				throw new BaseException(HttpErrorCode.UNAUTHORIZED, "User is unauthorized");
 			}
 		}
