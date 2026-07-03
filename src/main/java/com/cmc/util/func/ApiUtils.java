@@ -13,7 +13,7 @@ public class ApiUtils <T>{
 	}
 
 	public static <T> ResponseEntity<ApiResponse<T>> buildApiResponse(T data, HttpStatus httpStatus, String message){
-		com.cmc.util.dto.ApiResponse<T> response = ApiResponse.<T>builder()
+		ApiResponse<T> response = ApiResponse.<T>builder()
 				.data(data)
 				.httpStatusCode(httpStatus.value())
 				.message(message)

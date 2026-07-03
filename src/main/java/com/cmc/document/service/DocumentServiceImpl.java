@@ -7,9 +7,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.cmc.auth.config.UserDetailsCoreImpl;
 import com.cmc.document.dto.DocumentDTO;
+import com.cmc.document.dto.DocumentDTO.DocumentCounter;
 import com.cmc.document.dto.DocumentDTO.Request;
 import com.cmc.document.dto.DocumentDTO.Response;
 import com.cmc.document.entity.Document;
@@ -31,11 +34,13 @@ public class DocumentServiceImpl implements DocumentService{
 	private final DocumentRepository documentRepository;
 
 	@Override
-	public void createDocument(DocumentDTO.Request request) {
+	public Integer createDocument(DocumentDTO.Request request) {
+
+		boolean existsByCode = documentRepository.existsByCode(request.getCode());
+		if(existsByCode)
+			throw new BaseException(HttpErrorCode.DUPLICATED_DATA, "Code of this document existed");
+		
 		try {
-			boolean existsByCode = documentRepository.existsByCode(request.getCode());
-			if(existsByCode)
-				throw new BaseException(HttpErrorCode.DUPLICATED_DATA, "Code of this document existed");
 			Document document = Document.builder()
 					.title(request.getTitle())
 					.code(request.getCode())
@@ -44,6 +49,7 @@ public class DocumentServiceImpl implements DocumentService{
 					.status(EDocumentStatus.getByValue(request.getStatusValue()))
 					.build();
 			documentRepository.save(document);
+			return document.getId();
 		} catch (Exception e) {
 			throw new BaseException(HttpErrorCode.INTERNAL_ERROR, "Create Document failed");
 		}
@@ -63,7 +69,7 @@ public class DocumentServiceImpl implements DocumentService{
 							cb.like(root.get("title"), "%"+ request.getCode()+"%")
 					),
 					cb.equal(root.get("category"), EDocumentCategory.getByValue(request.getCategoryValue())),
-					cb.equal(root.get("status"), EDocumentCategory.getByValue(request.getStatusValue()))
+					cb.equal(root.get("status"), EDocumentStatus.getByValue(request.getStatusValue()))
 		 );
 		
 			return cb.and(predicates.toArray(new Predicate[0]));
@@ -93,5 +99,56 @@ public class DocumentServiceImpl implements DocumentService{
 		
 		return new PaginationResponseDTO(resultPages, dataResponse);
 	}
+
+	@Override
+	public String editDocument(Request request) {
+		UserDetailsCoreImpl userDetailsCoreImpl = (UserDetailsCoreImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		Document exitedDocument = documentRepository.findByCode(request.getCode())
+				.orElseThrow(()-> new BaseException(HttpErrorCode.NOT_FOUND, "Document not found"));
+		if(Boolean.FALSE.equals(userDetailsCoreImpl.getUsername().equals(exitedDocument.getCreatedBy()))) {
+			throw new BaseException(HttpErrorCode.FORBIDDEN, "Permission is denined for editing");
+		}
+
+		try {
+			exitedDocument.setTitle(request.getTitle());
+			exitedDocument.setDescription(request.getDescription());
+			exitedDocument.setCategory(EDocumentCategory.getByValue(request.getCategoryValue()));
+			exitedDocument.setStatus(EDocumentStatus.getByValue(request.getStatusValue()));
+			documentRepository.save(exitedDocument);
+			return exitedDocument.getCode();
+		} catch (Exception e) {
+			throw new BaseException(HttpErrorCode.INTERNAL_ERROR, "Edit Document failed");
+		}
+	}
 	
+	@Override
+	public Response getDocumentDetail(String code) {
+		UserDetailsCoreImpl userDetailsCoreImpl = (UserDetailsCoreImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		Document exitedDocument = documentRepository.findByCode(code)
+				.orElseThrow(()-> new BaseException(HttpErrorCode.NOT_FOUND, "Document not found"));
+		
+		if(Boolean.FALSE.equals(userDetailsCoreImpl.getUsername().equals(exitedDocument.getCreatedBy()))) {
+			throw new BaseException(HttpErrorCode.FORBIDDEN, "Permission is denined for viewing");
+		}
+		return Response.builder()
+				.id(exitedDocument.getId())
+				.code(exitedDocument.getCode())
+				.title(exitedDocument.getTitle())
+				.description(exitedDocument.getDescription())
+				.category(exitedDocument.getCategory())
+				.status(exitedDocument.getStatus())
+				.build();
+	}
+
+	@Override
+	public List<DocumentCounter> countDocumentsByStatus() {
+		try {
+			List<DocumentCounter> result = documentRepository.countDocumentsByStatus();
+			return result;
+		} catch (Exception e) {
+			throw new BaseException(HttpErrorCode.NOT_FOUND, "No counter of documents");
+		}
+	}
 }
