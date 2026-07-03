@@ -1,0 +1,265 @@
+{
+  "info": {
+    "_postman_id": "a7878f12-d2b9-4f53-8d70-2254cf714c29",
+    "name": "lotte-cmc-tect-test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "2184685",
+    "_collection_link": "https://go.postman.co/collection/2184685-a7878f12-d2b9-4f53-8d70-2254cf714c29?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "user-mgmt",
+      "item": [
+        {
+          "name": "create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0p1e}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userName\":\"lottemod22\",\r\n    \"password\":\"12345\",\r\n    \"roleName\":\"STAFF\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/userMgmt/user",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "userMgmt",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userName\":\"manhnk2\",\r\n    \"password\":\"12345\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/auth/login",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "documment",
+      "item": [
+        {
+          "name": "create",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_07gj}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"code\": \"US03\",\r\n  \"title\": \"Cấu hình JSON mẫu\",\r\n  \"description\": \"{\\\"setting\\\": {\\\"theme\\\": \\\"dark\\\", \\\"version\\\": 1.0, \\\"enableLogs\\\": true}}\",\r\n  \"statusValue\": 3,\r\n  \"categoryValue\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/documentMgmt/create",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "documentMgmt",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "search",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_1b4o}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"code\": \"\",\r\n  \"title\": \"\",\r\n  \"statusValue\": 2,\r\n  \"categoryValue\": 3,\r\n  \"pagination\":{\r\n    \"pageIndex\":0,\r\n    \"size\":3,\r\n    \"sortOrder\":{\r\n        \"desc\":\"code\"\r\n    }\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/documentMgmt/search",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "documentMgmt",
+                "search"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "edit",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0jhj}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"code\": \"\",\r\n  \"title\": \"Thông bào điều chỉnh người đại diện pháp luật công ty Bing\",\r\n  \"description\": \"Sửa đổi chức vụ của ông Nguyễn Khắc Mạnh với vai trò mới là Tổng Giám Đốc\",\r\n  \"statusValue\": 2,\r\n  \"categoryValue\": 2\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/documentMgmt/edit",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "documentMgmt",
+                "edit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "count document by status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0dml}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/documentMgmt/countDocumentByStatus",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "documentMgmt",
+                "countDocumentByStatus"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_secret_0p1e",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_03dc",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0a0g",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0jhj",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_07gj",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_1b4o",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0dml",
+      "secret": true
+    }
+  ]
+}
