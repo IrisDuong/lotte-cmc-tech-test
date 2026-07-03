@@ -21,7 +21,6 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService{
 	private final UserRepository userRepository;
 
 	@Override
-	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User existedUser = userRepository.findByUserName(username)
 				.orElseThrow(()-> new BaseException(HttpErrorCode.NOT_FOUND, "User not found"));
