@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "auth_user")
-@EntityListeners(AuditingEntityListener.class)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

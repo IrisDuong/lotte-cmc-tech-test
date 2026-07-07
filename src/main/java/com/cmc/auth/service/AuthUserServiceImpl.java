@@ -1,11 +1,13 @@
 package com.cmc.auth.service;
 
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.util.StringUtils;
 import com.cmc.auth.dto.UserDTO;
 import com.cmc.auth.entity.User;
 import com.cmc.auth.entity.UserRole;
@@ -44,5 +46,4 @@ public class AuthUserServiceImpl implements AuthUserService{
 			throw new BaseException(HttpErrorCode.INTERNAL_ERROR, "Create new User failed");
 		}
 	}
-
 }
